@@ -3,14 +3,22 @@ import { fetchQuizQuestions } from './components/Api';
 import { QuestionCard } from './components/QuestionCard';
 import './App.css';
 // Types
-import { Difficulty } from './components/Api';
+import { QuestionState, Difficulty } from './components/Api';
+
+type AnswersObject = {
+  question: string;
+  answer: string;
+  correct: boolean;
+  correctAnswer: string;
+};
+
 const TOTAL_QUESTIONS = 10;
 
 export const App = () => {
   const [loading, setLoading] = useState(false);
   const [number, setNumber] = useState(0);
-  const [questions, setQuestions] = useState([]);
-  const [userAnswers, setUserAnswers] = useState([]);
+  const [questions, setQuestions] = useState<QuestionState[]>([]);
+  const [userAnswers, setUserAnswers] = useState<AnswersObject[]>([]);
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(true);
   const StartTrivia = async () => {};
