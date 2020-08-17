@@ -23,10 +23,10 @@ export const QuestionCard: React.FC<Props> = ({
     </p>
     <p dangerouslySetInnerHTML={{ __html: question }} />
     <div>
-      {answers.map((answers) => (
-        <div>
-          <button disabled={userAnswer} onClick={callback}>
-            <span dangerouslySetInnerHTML={{ __html: answers }} />
+      {answers.map((answer) => (
+        <div key={answer}>
+          <button disabled={userAnswer} value={answer} onClick={callback}>
+            <span dangerouslySetInnerHTML={{ __html: answer }} />
           </button>
         </div>
       ))}

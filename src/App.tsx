@@ -21,29 +21,72 @@ export const App = () => {
   const [userAnswers, setUserAnswers] = useState<AnswersObject[]>([]);
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(true);
-  const StartTrivia = async () => {};
 
-  console.log(fetchQuizQuestions(TOTAL_QUESTIONS, Difficulty.EASY));
-  const checkAnswer = (e: React.MouseEvent<HTMLButtonElement>) => {};
+  // console.log(fetchQuizQuestions(TOTAL_QUESTIONS, Difficulty.EASY));
+  // console.log(questions);
+  const StartTrivia = async () => {
+    setLoading(true);
+    setGameOver(false);
+
+    const newQuestions = await fetchQuizQuestions(
+      TOTAL_QUESTIONS,
+      Difficulty.EASY
+    );
+    setQuestions(newQuestions);
+    setScore(0);
+    setUserAnswers([]);
+    setNumber(0);
+    setLoading(false);
+  };
+
+  const checkAnswer = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (!gameOver) {
+      const answer = e.currentTarget.value;
+      // check answer aganist correct value
+      const correct = questions[number].correct_answer === answer;
+      // add score if answer is correct
+      if (correct) setScore((prev) => prev + 1);
+      // save answer in array
+      const answerObject = {
+        question: questions[number].question,
+        answer,
+        correct,
+        correctAnswer: questions[number].correct_answer,
+      };
+      setUserAnswers((prev) => [...prev, answerObject]);
+    }
+  };
 
   const nextQuestion = () => {};
   return (
     <div className="App">
       <h1>React Quiz</h1>
-      <button className="start">Start</button>
-      <p className="score">Your Score:</p>
-      <p>Wait Loading Question ...!</p>
-      {/* <QuestionCard
-        questionNr={number + 1}
-        totalQuestions={TOTAL_QUESTIONS}
-        question={questions[number].question}
-        answers={questions[number].answers}
-        userAnswer={userAnswers ? userAnswers[number] : undefined}
-        callback={checkAnswer}
-      /> */}
-      <button className="next" onClick={nextQuestion}>
-        Next Question
-      </button>
+      {gameOver || userAnswers.length === TOTAL_QUESTIONS ? (
+        <button className="start" onClick={StartTrivia}>
+          Start
+        </button>
+      ) : null}
+
+      {!gameOver ? <p className="score">Your Score:</p> : null}
+      {loading && <p>Wait Loading Question ...!</p>}
+      {!loading && !gameOver && (
+        <QuestionCard
+          questionNr={number + 1}
+          totalQuestions={TOTAL_QUESTIONS}
+          question={questions[number].question}
+          answers={questions[number].answers}
+          userAnswer={userAnswers ? userAnswers[number] : undefined}
+          callback={checkAnswer}
+        />
+      )}
+      {!gameOver &&
+      !loading &&
+      userAnswers.length === number + 1 &&
+      number !== TOTAL_QUESTIONS - 1 ? (
+        <button className="next" onClick={nextQuestion}>
+          Next Question
+        </button>
+      ) : null}
     </div>
   );
 };
